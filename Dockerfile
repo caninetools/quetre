@@ -1,11 +1,12 @@
-FROM node:alpine3.17
+FROM node:lts-bullseye
 WORKDIR /app
-
-RUN apk update && apk add git   
-RUN git clone https://github.com/zyachel/quetre .
-RUN npm i -g pnpm
-RUN pnpm install
-
+RUN apt update -y && apt upgrade -y \
+    && apt install -y --no-install-recommends git \
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g pnpm \
+    && git clone --depth=1 https://github.com/caninetools/quetre.git . \
+    && pnpm install
 EXPOSE 3000
-
 CMD ["pnpm", "start"]
